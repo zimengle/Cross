@@ -1,19 +1,40 @@
 package com.baidu.fex.cross.utils;
 
 import java.util.List;
+
+import com.baidu.fex.cross.R;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.text.TextUtils;
 
 
 public class ShortcutUtils {
-
+	
+	public static Bitmap generateShorcut(Context context,Bitmap icon){
+		Bitmap newIcon = Bitmap.createBitmap(icon.getWidth(), icon.getHeight(), Config.ARGB_8888);
+		Bitmap light = ((BitmapDrawable)context.getResources().getDrawable(R.drawable.light_app_icon)).getBitmap();
+		Bitmap scaleLight = Bitmap.createScaledBitmap(light, icon.getWidth(), icon.getHeight(), true);
+		Canvas canvas = new Canvas(newIcon);
+		canvas.drawBitmap(icon, 0, 0, null);
+		canvas.drawBitmap(scaleLight,0, 0,null);
+		canvas.save(Canvas.ALL_SAVE_FLAG );
+		canvas.restore();
+//		light.recycle();
+//		scaleLight.recycle();
+//		icon.recycle();
+		return newIcon;
+	}
+	
 	public static boolean hasShortcut(Context context,String name) {
 		String AUTHORITY = getAuthorityFromPermission(context,"com.android.launcher.permission.READ_SETTINGS");
 		if (AUTHORITY == null) {
@@ -42,7 +63,7 @@ public class ShortcutUtils {
 		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
 		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, name);
 		intent.putExtra(
-				Intent.EXTRA_SHORTCUT_ICON,((BitmapDrawable)context.getResources().getDrawable(resID)).getBitmap());		
+				Intent.EXTRA_SHORTCUT_ICON,generateShorcut(context,((BitmapDrawable)context.getResources().getDrawable(resID)).getBitmap()));		
 		intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
 		context.sendBroadcast(intent);
 	}
