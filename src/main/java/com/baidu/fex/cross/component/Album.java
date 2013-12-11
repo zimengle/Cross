@@ -12,10 +12,13 @@ import com.baidu.fex.cross.model.AlbumResult.Album.Data;
 import com.baidu.fex.cross.model.AlbumResult.Album.Data.Image;
 import com.baidu.fex.cross.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
@@ -26,6 +29,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import android.widget.TextView;
@@ -150,8 +154,11 @@ public class Album extends FrameLayout implements OnClickListener,OnPageChangeLi
 		
 		private ImageLoader imageLoader;
 		
+		private Context mContext;
+		
 		public AlbumPagerAdapter(Context context,AlbumResult albumResult) {
 			this.images = albumResult.getAlbum().getData().getImages();
+			this.mContext = context;
 			imageLoader = Utils.getImageLoader(context);
 		}
 
@@ -162,9 +169,30 @@ public class Album extends FrameLayout implements OnClickListener,OnPageChangeLi
 
 		@Override
 		public View instantiateItem(ViewGroup container, int position) {
-			PhotoView photoView = new PhotoView(container.getContext());
-			imageLoader.displayImage(images.get(position).getUrl(), photoView);
-			container.addView(photoView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+			View item = LayoutInflater.from(mContext).inflate(R.layout.slider_item, null);
+			container.addView(item, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+			PhotoView photoView = (PhotoView) item.findViewById(R.id.photoView);
+			final ProgressBar progressBar = (ProgressBar) item.findViewById(R.id.loading);
+			imageLoader.displayImage(images.get(position).getUrl(), photoView,new SimpleImageLoadingListener(){
+				@Override
+				public void onLoadingStarted(String imageUri, View view) {
+					progressBar.setVisibility(View.VISIBLE);
+				}
+				@Override
+				public void onLoadingComplete(String imageUri, View view,
+						Bitmap loadedImage) {
+					progressBar.setVisibility(View.GONE);
+				}
+				@Override
+				public void onLoadingCancelled(String imageUri, View view) {
+					progressBar.setVisibility(View.GONE);
+				}
+				@Override
+				public void onLoadingFailed(String imageUri, View view,
+						FailReason failReason) {
+					progressBar.setVisibility(View.GONE);
+				}
+			});
 			//牛逼的预加载
 			if(position+1 < images.size()){
 				imageLoader.loadImage(images.get(position+1).getUrl(), null);
@@ -174,7 +202,7 @@ public class Album extends FrameLayout implements OnClickListener,OnPageChangeLi
 			}
 			
 			
-			return photoView;
+			return item;
 		}
 
 		@Override
