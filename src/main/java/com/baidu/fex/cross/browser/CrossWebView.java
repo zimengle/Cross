@@ -23,7 +23,7 @@ public class CrossWebView extends WebView implements WebComponent{
 
 	private Context context;
 	
-	private WebViewCallback webViewCallback;
+	private WebViewCallback webViewCallback = new WebViewCallbackImpl();
 	
 	private ArrayList<WebComponent> webComponents = new ArrayList<WebComponent>();
 
@@ -41,17 +41,15 @@ public class CrossWebView extends WebView implements WebComponent{
 		super(context);
 		init(context);
 	}
-	
-	public CrossWebView(Context mContext, WebViewCallback webViewCallback) {
-		this(mContext);
-		this.webViewCallback = webViewCallback;
-	}
 
+	public void setWebViewCallback(WebViewCallback webViewCallback) {
+		if (webViewCallback != null){
+			this.webViewCallback = webViewCallback;
+		}
+	}
+	
 	private void init(Context context) {
 		this.context = context;
-		if(webViewCallback == null){
-			webViewCallback = new WebViewCallbackImpl();
-		}
 		getSettings().setJavaScriptEnabled(true);
 		getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 		
@@ -60,6 +58,7 @@ public class CrossWebView extends WebView implements WebComponent{
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
+				System.out.println("null: " + (webViewCallback == null));
 				webViewCallback.onPageStarted(view, url, favicon);
 			}
 			@Override

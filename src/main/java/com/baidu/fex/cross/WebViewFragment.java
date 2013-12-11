@@ -37,7 +37,8 @@ public class WebViewFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
-		mWebView = new CrossWebView(mContext, webViewCallback);
+		mWebView = new CrossWebView(mContext);
+		mWebView.setWebViewCallback(webViewCallback);
 		mWebView.loadUrl(getArguments().getString("url"));
 		return mWebView;
 	}
