@@ -1,5 +1,6 @@
 package com.baidu.fex.cross.component;
 
+import java.io.Serializable;
 import java.util.List;
 
 import uk.co.senab.photoview.PhotoView;
@@ -38,9 +39,10 @@ import android.view.animation.AnimationUtils;
 
 public class Album extends FrameLayout implements OnClickListener,OnPageChangeListener{
 
-	public static interface AlbumListener{
+	public static interface AlbumListener extends Serializable{
 		public void onQuitClick();
 	}
+	
 	
 	private HackyViewPager mViewPager;
 	
@@ -58,9 +60,8 @@ public class Album extends FrameLayout implements OnClickListener,OnPageChangeLi
 	
 	private AlbumListener listener;
 	
-	public Album(Context context,AlbumResult albumResult,AlbumListener listener) {
+	public Album(Context context,AlbumListener listener) {
 		super(context);
-		this.albumResult = albumResult;
 		this.listener = listener;
 		init();
 	}
@@ -121,7 +122,7 @@ public class Album extends FrameLayout implements OnClickListener,OnPageChangeLi
 		mBootomBar.setOnClickListener(this);
 		mViewPager = (HackyViewPager) findViewById(R.id.viewpager);
 		mTitleView = (TextView) findViewById(R.id.title);
-		mTitleView.setText(albumResult.getTitle());
+		
 		mDescrView = (TextView) findViewById(R.id.descr);
 		mOrderView = (TextView) findViewById(R.id.order);
 		mBackView = findViewById(R.id.back);
@@ -129,10 +130,12 @@ public class Album extends FrameLayout implements OnClickListener,OnPageChangeLi
 		mNextView = findViewById(R.id.next);
 		mQuitView = findViewById(R.id.quit);
 		mQuitView.setOnClickListener(this);
-		buildViewPager();
+//		buildViewPager();
 	}
 	
-	private void buildViewPager(){
+	public void setAlbumResult(AlbumResult result){
+		this.albumResult = result;
+		mTitleView.setText(albumResult.getTitle());
 		mViewPager.setAdapter(new AlbumPagerAdapter(getContext(), albumResult));
 		mViewPager.setOnPageChangeListener(this);
 		onPageSelected(mViewPager.getCurrentItem());

@@ -14,20 +14,38 @@ import com.baidu.fex.cross.model.AlbumResult;
 import com.google.gson.Gson;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 
-public class AlbumActivity extends Activity{
+public class AlbumFragment extends Fragment{
 
 	private String url;
 	
 	private Album album;
 	
+	private Context mContext;
+	
+
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		album = new Album(mContext,(AlbumListener) getArguments().getSerializable("AlbumListener"));
+		return album;
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		url = getIntent().getStringExtra("url");
+		mContext = getActivity();
+		
+		url = getArguments().getString("url");
 		new AsyncTask<String, Void, AlbumResult>(){
 
 			@Override
@@ -55,14 +73,7 @@ public class AlbumActivity extends Activity{
 			
 			@Override
 			protected void onPostExecute(AlbumResult result) {
-				album = new Album(AlbumActivity.this, result,new AlbumListener() {
-					
-					public void onQuitClick() {
-						AlbumActivity.this.finish();
-						
-					}
-				});
-				setContentView(album,new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+				album.setAlbumResult(result);
 			}
 			
 		}.execute(url);
