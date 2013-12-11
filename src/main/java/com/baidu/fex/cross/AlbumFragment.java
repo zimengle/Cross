@@ -8,12 +8,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 
-import com.baidu.fex.cross.component.Album;
-import com.baidu.fex.cross.component.Album.AlbumListener;
-import com.baidu.fex.cross.model.AlbumResult;
-import com.google.gson.Gson;
-
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,7 +15,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
+
+import com.baidu.fex.cross.component.Album;
+import com.baidu.fex.cross.component.Album.AlbumListener;
+import com.baidu.fex.cross.model.AlbumResult;
+import com.google.gson.Gson;
 
 public class AlbumFragment extends Fragment{
 
