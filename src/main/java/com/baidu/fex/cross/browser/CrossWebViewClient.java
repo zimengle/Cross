@@ -57,13 +57,11 @@ public class CrossWebViewClient extends WebViewClient {
 
 	@Override
 	public void onPageStarted(WebView view, String url, Bitmap favicon) {
-		System.out.println("page start...");
 		webView.dismiss();
 	}
 	
 	@Override
 	public void onPageFinished(WebView view, String url) {
-		System.out.println("page finish...");
 		executeInjectJS();
 	}
 	
