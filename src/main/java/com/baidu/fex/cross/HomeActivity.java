@@ -8,7 +8,9 @@ import com.baidu.fex.cross.HomeActivity.AppGridAdapter.App;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,8 @@ import android.widget.TextView;
 public class HomeActivity extends Activity{
 	
 	private GridView gridView;
+	
+	public static final String ACTION_OPEN_APP = "ACTION_OPEN_APP";
 	
 	private List<App> apps = new ArrayList<App>(){{
 		add(new App(R.drawable.app_tieba_icon, "http://tieba.baidu.com", "贴吧"));
@@ -38,6 +42,24 @@ public class HomeActivity extends Activity{
 		add(new App(R.drawable.app_tieba_icon, "http://tieba.baidu.com", "贴吧"));
 		add(new App(R.drawable.app_tieba_icon, "http://tieba.baidu.com", "贴吧"));
 	}};
+	
+	private void createShortcut(){
+		final Intent intent = new Intent();
+		Intent shortcutIntent = new Intent();
+		shortcutIntent.setClassName("com.baidu.fex.cross", "com.baidu.fex.cross.HomeActivity");
+		shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        shortcutIntent.setAction(ACTION_OPEN_APP);
+        shortcutIntent.putExtra("url", "http://tieba.baidu.com");
+        
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT,shortcutIntent );
+        // Sets the custom shortcut's title
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME,"贴吧");
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, ((BitmapDrawable)getResources().getDrawable(R.drawable.app_tieba_icon)).getBitmap());
+
+        // add the shortcut
+        intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        sendBroadcast(intent);
+	}
 	
 	private AppGridAdapter gridAdapter;
 	
@@ -58,13 +80,32 @@ public class HomeActivity extends Activity{
 					int position, long id) {
 				App app = apps.get(position);
 				String url = app.url;
-				Intent intent = new Intent(mContext, BrowserActivity.class);
-				intent.putExtra("url", url);
-				mContext.startActivity(intent);
+				openApp(url);
 			}
 			
 		});
+		createShortcut();
 	}
+	
+	public void openApp(String url){
+		
+		Intent intent = new Intent(mContext, BrowserActivity.class);
+		intent.putExtra("url", url);
+		mContext.startActivity(intent);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Intent intent = getIntent();
+		if(ACTION_OPEN_APP.equals(intent.getAction())){
+			String url = intent.getStringExtra("url");
+			openApp(url);
+			intent.setAction(null);
+		}
+	}
+	
+	
 	
 	public static class AppGridAdapter extends BaseAdapter{
 
@@ -135,6 +176,8 @@ public class HomeActivity extends Activity{
 		}
 		
 	}
+	
+	
 
 
 }

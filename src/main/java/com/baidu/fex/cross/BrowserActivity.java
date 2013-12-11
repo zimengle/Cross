@@ -4,6 +4,7 @@ package com.baidu.fex.cross;
 import com.baidu.fex.cross.WebViewFragment.WebViewCallback;
 import com.baidu.fex.cross.component.Album;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -39,6 +40,8 @@ public class BrowserActivity extends FragmentActivity implements OnClickListener
 		mBackBtn.setOnClickListener(this);
 		mLoadingView = findViewById(R.id.loading);
 	}
+	
+	
 	
 	
 
