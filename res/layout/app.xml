@@ -2,24 +2,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="22dp"
     android:background="@drawable/item_border"
-    android:gravity="center">
-    
-    <ImageView 
+    android:gravity="center"
+    android:orientation="vertical"
+    android:clickable="false"
+    android:focusableInTouchMode="false"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp" >
+
+    <ImageButton
+        android:background="@android:color/transparent"
         android:id="@+id/icon"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/app_tieba_icon"/>
-    
-    <TextView 
+        android:scaleType="centerCrop"
+        android:src="@drawable/app_zhidao_icon" />
+
+    <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:text="贴吧"
-        android:layout_marginTop="18dp"
-        android:textColor="#9c9c9c"
-        android:textSize="12sp"/>
-    
+        android:textColor="#333"
+        android:textSize="12sp" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp" >
+
+        <TextView
+            android:id="@+id/btn_install"
+            android:layout_width="70dp"
+            android:layout_height="25dp"
+            android:background="@drawable/btn_install"
+            android:gravity="center"
+            android:text="安装到桌面"
+            android:textColor="#fff"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/btn_installed"
+            android:layout_width="70dp"
+            android:layout_height="25dp"
+            android:background="@drawable/btn_install"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="已安装"
+            android:textColor="#333"
+            android:textSize="12sp"
+            android:visibility="gone" />
+    </FrameLayout>
+
 </LinearLayout>
