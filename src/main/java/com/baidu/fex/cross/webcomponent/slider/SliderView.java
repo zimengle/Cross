@@ -1,6 +1,7 @@
 package com.baidu.fex.cross.webcomponent.slider;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class SliderView extends ViewPager {
@@ -27,12 +30,14 @@ public class SliderView extends ViewPager {
 	private ImageLoader imageLoader = ImageLoader.getInstance();
 
 	private OnSizeChangedListener onSizeChangedListener;
+	
+	private ImageLoadingListener imageLoadingListener;
 
 	public SliderView(Context context) {
 		super(context);
 		this.context = context;
 		DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
-				.cacheInMemory(true).imageScaleType(ImageScaleType.NONE)
+				.cacheInMemory(true).imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
 				.build();
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
 				context).memoryCache(new WeakMemoryCache())
@@ -52,6 +57,10 @@ public class SliderView extends ViewPager {
 			setAdapter(new SliderViewAdapter());
 		}
 	}
+	
+	public void setImageLoadingListener(ImageLoadingListener imageLoadingListener){
+		this.imageLoadingListener = imageLoadingListener;
+	}
 
 	class SliderViewAdapter extends PagerAdapter {
 
@@ -61,7 +70,8 @@ public class SliderView extends ViewPager {
 					R.layout.webcomponent_slider_image_item, null);
 			ImageView imageView = (ImageView) view.findViewById(R.id.image);
 			imageViewList[position] = imageView;
-			imageLoader.displayImage(imgUrls[position], imageView);
+			imageLoader.displayImage(imgUrls[position], imageView, imageLoadingListener);
+			
 			((ViewPager) container).addView(view);
 			return view;
 		}

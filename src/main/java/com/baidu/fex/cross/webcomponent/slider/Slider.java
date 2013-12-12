@@ -1,14 +1,17 @@
 package com.baidu.fex.cross.webcomponent.slider;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.baidu.fex.cross.browser.CrossWebView;
 import com.baidu.fex.cross.webcomponent.WebComponentAbs;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 
-public class Slider extends WebComponentAbs {
+public class Slider extends WebComponentAbs implements ImageLoadingListener {
 
 	private SliderView sliderView;
 
@@ -28,7 +31,7 @@ public class Slider extends WebComponentAbs {
 		sliderView.setLayoutParams(params);
 		sliderView.setOnSizeChangedListener(this);
 		sliderView.setVisibility(View.INVISIBLE);
-		
+		sliderView.setImageLoadingListener(this);
 		return sliderView;
 	}
 
@@ -50,5 +53,27 @@ public class Slider extends WebComponentAbs {
 	protected RelativeLayout.LayoutParams getLayoutParams() {
 		return params;
 	}
+	
+	@Override
+	public void dismiss() {
+		super.dismiss();
+		crossWebView.runJSMethod("onSliderNativeDismissed()");
+	}
 
+	public void onLoadingCancelled(String arg0, View arg1) {
+		
+	}
+
+	public void onLoadingComplete(String arg0, View arg1, Bitmap arg2) {
+		crossWebView.runJSMethod("onSliderNativeInstalled()");
+	}
+
+	public void onLoadingFailed(String arg0, View arg1, FailReason arg2) {
+		
+	}
+
+	public void onLoadingStarted(String arg0, View arg1) {
+		
+	}
+	
 }

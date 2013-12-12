@@ -84,6 +84,7 @@ $(function(){
 					offset = {};
 					installed = false;
 					prevOffset = null;
+					JSInterface.onSliderNativeDismissed();
 					return;
 				}
 				if(prevOffset && offset.left == prevOffset.left && offset.top == prevOffset.top){
@@ -97,14 +98,23 @@ $(function(){
 					slider.notifyDomChange(offset.left, offset.top, offset.width, offset.height);
 				}
 			};
-			if(!sliderNode.size()) return;
 			
 			setInterval(function(){
 				domChangeListener();
 			}, 50);
-
-			domChangeListener();
 			
+			if(sliderNode.size()){
+				domChangeListener();
+			}
+			
+			JSInterface.onSliderNativeDismissed = function(value){
+				$("#carouselWrap").css("visibility", "visible");
+			};
+			JSInterface.onSliderNativeInstalled = function(value){
+				$("#carouselWrap").css("visibility", "hidden");
+			};
+			
+			JSInterface.onSliderNativeInstalled();
 		}
 	},
 	
