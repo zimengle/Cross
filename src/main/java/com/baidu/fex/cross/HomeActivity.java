@@ -38,10 +38,10 @@ public class HomeActivity extends Activity {
 		apps = new ArrayList<App>() {
 			{
 				add(new App(mContext, R.drawable.app_tieba_icon,
-						"http://tieba.baidu.com", "贴吧"));
+						"http://tieba.baidu.com", "百度贴吧"));
 				add(new App(mContext, R.drawable.app_zhidao_icon,
-						"http://zhidao.baidu.com", "知道"));
-				add(new App(mContext, R.drawable.app_wenku_icon, "http://wk.baidu.com", "文库"));
+						"http://zhidao.baidu.com", "百度知道"));
+				add(new App(mContext, R.drawable.app_wenku_icon, "http://wk.baidu.com", "百度文库"));
 			}
 		};
 		gridAdapter = new AppGridAdapter(this, apps);

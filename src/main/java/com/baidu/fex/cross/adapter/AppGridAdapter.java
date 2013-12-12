@@ -40,7 +40,7 @@ public class AppGridAdapter extends BaseAdapter{
 			this.appIcon = appIcon;
 			this.url = url;
 			this.name = name;
-			shortcutName = "轻"+name;
+			shortcutName = name;
 			checkInstall();
 		}
 		
