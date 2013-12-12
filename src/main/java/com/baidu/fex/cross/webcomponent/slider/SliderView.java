@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.baidu.fex.cross.R;
+import com.baidu.fex.cross.utils.Utils;
 import com.baidu.fex.cross.webcomponent.OnSizeChangedListener;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -27,7 +28,7 @@ public class SliderView extends ViewPager {
 
 	private Context context;
 
-	private ImageLoader imageLoader = ImageLoader.getInstance();
+	private ImageLoader imageLoader;
 
 	private OnSizeChangedListener onSizeChangedListener;
 	
@@ -35,6 +36,7 @@ public class SliderView extends ViewPager {
 
 	public SliderView(Context context) {
 		super(context);
+		this.imageLoader = Utils.getImageLoader(context);
 		this.context = context;
 		DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
 				.cacheInMemory(true).imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
