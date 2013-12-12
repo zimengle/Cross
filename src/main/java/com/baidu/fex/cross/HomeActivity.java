@@ -20,7 +20,7 @@ public class HomeActivity extends Activity {
 
 	private GridView gridView;
 
-	public static final String ACTION_OPEN_APP = "ACTION_OPEN_APP";
+	
 
 	private AppGridAdapter gridAdapter;
 
@@ -54,7 +54,7 @@ public class HomeActivity extends Activity {
 					openApp(app.getUrl());
 					break;
 				case R.id.btn_install:
-					ShortcutUtils.createShortcut(mContext,ACTION_OPEN_APP,app.getUrl(), app.getShortcutName(),app.getAppIcon());
+					ShortcutUtils.createShortcut(mContext,app.getUrl(), app.getShortcutName(),app.getAppIcon());
 					app.setInstalled(true);
 					gridAdapter.notifyDataSetChanged();
 					break;
@@ -76,12 +76,6 @@ public class HomeActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		checkInstalled();
-		Intent intent = getIntent();
-		if (ACTION_OPEN_APP.equals(intent.getAction())) {
-			String url = intent.getStringExtra("url");
-			openApp(url);
-			intent.setAction(null);
-		}
 	}
 	
 	protected void checkInstalled(){

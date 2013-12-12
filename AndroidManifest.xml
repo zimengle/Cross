@@ -13,17 +13,21 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.baidu.fex.cross.HomeActivity" >
+        <activity
+            android:name="com.baidu.fex.cross.HomeActivity"
+            android:taskAffinity="com.baidu.fex.cross.HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.baidu.fex.cross.BrowserActivity"
+            android:taskAffinity="com.baidu.fex.cross.BrowserActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" >
                 </action>
             </intent-filter>
-        </activity>
-        <activity android:name="com.baidu.fex.cross.BrowserActivity" >
         </activity>
     </application>
 

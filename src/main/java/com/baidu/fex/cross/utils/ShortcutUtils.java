@@ -2,8 +2,10 @@ package com.baidu.fex.cross.utils;
 
 import java.util.List;
 
+import com.baidu.fex.cross.BrowserActivity;
 import com.baidu.fex.cross.R;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -20,6 +22,8 @@ import android.text.TextUtils;
 
 public class ShortcutUtils {
 	
+	public static final String ACTION_APP_LAUNCHER = "ACTION_APP_LAUNCHER";
+	
 	public static Bitmap generateShorcut(Context context,Bitmap icon){
 		Bitmap newIcon = Bitmap.createBitmap(icon.getWidth(), icon.getHeight(), Config.ARGB_8888);
 		Bitmap light = ((BitmapDrawable)context.getResources().getDrawable(R.drawable.light_app_icon)).getBitmap();
@@ -29,9 +33,6 @@ public class ShortcutUtils {
 		canvas.drawBitmap(scaleLight,0, 0,null);
 		canvas.save(Canvas.ALL_SAVE_FLAG );
 		canvas.restore();
-//		light.recycle();
-//		scaleLight.recycle();
-//		icon.recycle();
 		return newIcon;
 	}
 	
@@ -49,15 +50,15 @@ public class ShortcutUtils {
 		return false;
 	}
 	
-	public static void createShortcut(Context context,String action,String url,String name,int resID) {
+	public static void createShortcut(Context context,String url,String name,int resID) {
 		final Intent intent = new Intent();
 		Intent shortcutIntent = new Intent();
 		shortcutIntent.putExtra("duplicate", false);
-		shortcutIntent.setClassName("com.baidu.fex.cross",
-				"com.baidu.fex.cross.HomeActivity");
-		shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-				| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-		shortcutIntent.setAction(action);
+		shortcutIntent.setComponent(new ComponentName(
+				context.getPackageName(), BrowserActivity.class.getName()));
+		shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+		shortcutIntent.setAction(ACTION_APP_LAUNCHER);
 		shortcutIntent.putExtra("url", url);
 
 		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
