@@ -27,6 +27,8 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="47dp"
         android:background="@drawable/browser_toolbar_bg" >
