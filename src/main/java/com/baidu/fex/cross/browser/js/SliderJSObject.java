@@ -45,4 +45,11 @@ public class SliderJSObject implements InteractableJSObj{
 		handler.sendMessage(message);
 	}
 	
+	public void notifyRemoved(){
+		Message message = handler.obtainMessage();
+		message.what = 3;
+		message.setData(bundle);
+		handler.sendMessage(message);
+	}
+	
 }

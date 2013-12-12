@@ -28,6 +28,8 @@ public class CrossWebView extends WebView implements WebComponent{
 	
 	private ArrayList<WebComponent> webComponents = new ArrayList<WebComponent>();
 
+	protected boolean loaded;
+
 	public CrossWebView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init(context);
@@ -53,20 +55,26 @@ public class CrossWebView extends WebView implements WebComponent{
 		this.context = context;
 		getSettings().setJavaScriptEnabled(true);
 		getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+		getSettings().setDomStorageEnabled(true);
 		
 		setWebChromeClient(new CrossChromeClient(context));
 		setWebViewClient(new CrossWebViewClient(context, this){
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
-				System.out.println("null: " + (webViewCallback == null));
 				webViewCallback.onPageStarted(view, url, favicon);
+				loaded = false;
 			}
+			
 			@Override
 			public void onPageFinished(WebView view, String url) {
-				super.onPageFinished(view, url);
-				webViewCallback.onPageFinished(view, url);
+				if (!loaded) {
+					super.onPageFinished(view, url);
+					webViewCallback.onPageFinished(view, url);
+					loaded = true;
+				}
 			}
+
 		});
 		
 		// 增加 native 能力
@@ -101,6 +109,9 @@ public class CrossWebView extends WebView implements WebComponent{
 			break;
 		case 2:
 			updateAll(data);
+			break;
+		case 3:
+			dismiss();
 			break;
 		}
 	}
