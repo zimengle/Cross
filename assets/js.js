@@ -34,7 +34,6 @@ $(function(){
 				}else{
 					contactInput.notifyDomChange(offset.left, offset.top, offset.width, offset.height);
 				}
-				console.log("DOMSubtreeModified, new top: " + offset.top);
 			};
 			if(!input.size()) return;
 			
@@ -61,7 +60,7 @@ $(function(){
 			installed = false,
 			sliderNode = $("#carouselWrap"),
 			getOffset = function(){
-				return sliderNode.offset();
+				return $("#carouselWrap").offset();
 			},
 			imgUrls = (function(){
 				var imgUrls = [];
@@ -79,6 +78,14 @@ $(function(){
 			prevOffset,
 			domChangeListener = function(){
 				var offset = getOffset();
+				if(!offset) {
+					if(!installed) return;
+					slider.notifyRemoved();
+					offset = {};
+					installed = false;
+					prevOffset = null;
+					return;
+				}
 				if(prevOffset && offset.left == prevOffset.left && offset.top == prevOffset.top){
 					return;
 				}
@@ -95,8 +102,9 @@ $(function(){
 			setInterval(function(){
 				domChangeListener();
 			}, 50);
-			
+
 			domChangeListener();
+			
 		}
 	},
 	
