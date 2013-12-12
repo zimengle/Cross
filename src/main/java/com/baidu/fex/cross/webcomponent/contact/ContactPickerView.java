@@ -14,6 +14,7 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
 
 import com.baidu.fex.cross.R;
+import com.baidu.fex.cross.webcomponent.OnSizeChangedListener;
 
 public class ContactPickerView extends ImageButton implements OnTouchListener{
 
@@ -106,10 +107,6 @@ public class ContactPickerView extends ImageButton implements OnTouchListener{
 	
 	public void setOnSizeChangedListener(OnSizeChangedListener onSizeChangedListener){
 		this.onSizeChangedListener = onSizeChangedListener;
-	}
-	
-	interface OnSizeChangedListener {
-		void sizeChanged(int width, int height);
 	}
 
 	public boolean onTouch(View view, MotionEvent event) {

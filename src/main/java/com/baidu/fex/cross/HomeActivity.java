@@ -41,6 +41,7 @@ public class HomeActivity extends Activity {
 						"http://tieba.baidu.com", "贴吧"));
 				add(new App(mContext, R.drawable.app_zhidao_icon,
 						"http://zhidao.baidu.com", "知道"));
+				add(new App(mContext, R.drawable.app_wenku_icon, "http://wk.baidu.com", "文库"));
 			}
 		};
 		gridAdapter = new AppGridAdapter(this, apps);
