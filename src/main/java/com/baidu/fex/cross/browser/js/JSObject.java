@@ -33,12 +33,6 @@ public class JSObject {
 		return contactInputJSObject;
 	}
 	
-	public InteractableJSObj getSlider() {
-		InteractableJSObj sliderJSObject = new SliderJSObject(handler);
-		sliderJSObject.setPageRatio(pageRatio);
-		return sliderJSObject;
-	}
-	
 	public InteractableJSObj getComponent(String componentName){
 		String componentClassName = packageName+"."+componentName+"JSObject";
 		InteractableJSObj instance = null;
