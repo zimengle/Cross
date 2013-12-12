@@ -4,18 +4,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-
-public class ContactInputJSObject implements InteractableJSObj{
+public class SliderJSObject implements InteractableJSObj{
 
 	private Handler handler;
-
+	
 	private float ratio;
 	
 	private Bundle bundle = new Bundle();
 
-	public ContactInputJSObject(Handler handler){
+	public SliderJSObject(Handler handler){
 		this.handler = handler;
-		bundle.putString("type", "Contact");
+		bundle.putString("type", "Slider");
+	}
+	
+	public void setPageRatio(float ratio) {
+		this.ratio = ratio;
 	}
 	
 	private void setBundle(int left, int top, int width, int height){
@@ -25,16 +28,13 @@ public class ContactInputJSObject implements InteractableJSObj{
 		bundle.putInt("top", (int) (top * ratio));
 	}
 	
-	public void install(int left, int top, int width, int height) {
+	public void install(int left, int top, int width, int height, String imgUrls) {
+		bundle.putString("imgUrls", imgUrls);
 		setBundle(left, top, width, height);
 		Message message = handler.obtainMessage();
 		message.what = 1;
 		message.setData(bundle);
 		handler.sendMessage(message);
-	}
-
-	public void setPageRatio(float ratio) {
-		this.ratio = ratio;
 	}
 
 	public void notifyDomChange(int left, int top, int width, int height) {
@@ -44,6 +44,5 @@ public class ContactInputJSObject implements InteractableJSObj{
 		message.setData(bundle);
 		handler.sendMessage(message);
 	}
-
 	
 }

@@ -27,12 +27,6 @@ public class JSObject {
 		return pageRatio;
 	}
 	
-	public InteractableJSObj getContactInput() {
-		InteractableJSObj contactInputJSObject = new ContactInputJSObject(handler);
-		contactInputJSObject.setPageRatio(pageRatio);
-		return contactInputJSObject;
-	}
-	
 	public InteractableJSObj getComponent(String componentName){
 		String componentClassName = packageName+"."+componentName+"JSObject";
 		InteractableJSObj instance = null;

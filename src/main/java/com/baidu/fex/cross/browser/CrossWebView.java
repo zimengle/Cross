@@ -17,6 +17,7 @@ import android.webkit.WebView;
 import com.baidu.fex.cross.browser.js.JSObject;
 import com.baidu.fex.cross.webcomponent.WebComponent;
 import com.baidu.fex.cross.webcomponent.contact.ContactPicker;
+import com.baidu.fex.cross.webcomponent.slider.Slider;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class CrossWebView extends WebView implements WebComponent{
@@ -85,11 +86,18 @@ public class CrossWebView extends WebView implements WebComponent{
 	
 	private void onGetMessageFromPage(Message msg) {
 		Bundle data = msg.getData();
+		String type = data.getString("type");
 		switch (msg.what) {
 		case 1:
-			WebComponent webComponent = new ContactPicker(context, this);
-			addWebComponent(webComponent);
-			webComponent.updateAll(data);
+			if(type.equals("Contact")){
+				WebComponent webComponent = new ContactPicker(context, this);
+				addWebComponent(webComponent);
+				webComponent.updateAll(data);
+			} else if(type.equals("Slider")){
+				WebComponent webComponent = new Slider(context, this);
+				addWebComponent(webComponent);
+				webComponent.updateAll(data);
+			}
 			break;
 		case 2:
 			updateAll(data);
