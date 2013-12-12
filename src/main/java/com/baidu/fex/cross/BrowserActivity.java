@@ -1,19 +1,17 @@
 package com.baidu.fex.cross;
 
 
-import com.baidu.fex.cross.WebViewFragment.WebViewCallback;
-import com.baidu.fex.cross.component.Album;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
+
+import com.baidu.fex.cross.browser.WebViewCallback;
+import com.baidu.fex.cross.component.Album;
 
 public class BrowserActivity extends FragmentActivity implements OnClickListener,WebViewCallback{
 
@@ -102,7 +100,10 @@ public class BrowserActivity extends FragmentActivity implements OnClickListener
 
 	public void onPageFinished(WebView view, String url) {
 		mLoadingView.setVisibility(View.GONE);
-		
 	}
 
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		fragment.onActivityResult(arg0, arg1, arg2);
+	}
 }

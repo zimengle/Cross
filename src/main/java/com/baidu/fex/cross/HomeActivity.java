@@ -2,10 +2,6 @@ package com.baidu.fex.cross;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.baidu.fex.cross.adapter.AppGridAdapter;
-import com.baidu.fex.cross.adapter.AppGridAdapter.App;
-import com.baidu.fex.cross.adapter.AppGridAdapter.OnItemClickListener;
-import com.baidu.fex.cross.utils.ShortcutUtils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +10,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
+
+import com.baidu.fex.cross.adapter.AppGridAdapter;
+import com.baidu.fex.cross.adapter.AppGridAdapter.App;
+import com.baidu.fex.cross.adapter.AppGridAdapter.OnItemClickListener;
+import com.baidu.fex.cross.utils.ShortcutUtils;
 
 public class HomeActivity extends Activity {
 
