@@ -64,10 +64,14 @@ public class Album extends FrameLayout implements OnClickListener,OnPageChangeLi
 	
 	private AlbumListener listener;
 	
-	public Album(Context context,AlbumListener listener) {
+	public Album(Context context) {
 		super(context);
-		this.listener = listener;
+		
 		init();
+	}
+	
+	public void setAlbumListener(AlbumListener listener) {
+		this.listener = listener;
 	}
 	
 	private boolean show = true;

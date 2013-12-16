@@ -29,13 +29,21 @@ public class AlbumFragment extends Fragment{
 	
 	private Context mContext;
 	
+	private AlbumListener albumListener;
 
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		album = new Album(mContext,(AlbumListener) getArguments().getSerializable("AlbumListener"));
+		album = new Album(mContext);
+		if(albumListener != null){
+			album.setAlbumListener(albumListener);
+		}
 		return album;
+	}
+	
+	public void setAlbumListener(AlbumListener albumListener){
+		this.albumListener = albumListener;
 	}
 	
 	@Override

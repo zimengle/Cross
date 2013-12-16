@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.baidu.fex.cross.browser.WebViewCallback;
 import com.baidu.fex.cross.component.Album;
+import com.baidu.fex.cross.component.Album.AlbumListener;
 import com.baidu.fex.cross.utils.ShortcutUtils;
 
 public class BrowserActivity extends FragmentActivity implements
@@ -104,14 +105,15 @@ public class BrowserActivity extends FragmentActivity implements
 		if (url.startsWith("http://tieba.baidu.com/mo/q/album")) {
 			view.stopLoading();
 			AlbumFragment albumFragment = new AlbumFragment();
-			Bundle bundle = new Bundle();
-			bundle.putSerializable("AlbumListener", new Album.AlbumListener() {
-
+			albumFragment.setAlbumListener(new AlbumListener() {
+				
 				public void onQuitClick() {
 					getSupportFragmentManager().popBackStack();
-
+					
 				}
 			});
+			Bundle bundle = new Bundle();
+			
 			bundle.putString("url", url);
 			albumFragment.setArguments(bundle);
 			getSupportFragmentManager().beginTransaction()
