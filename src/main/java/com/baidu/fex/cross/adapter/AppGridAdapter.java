@@ -126,7 +126,7 @@ public class AppGridAdapter extends BaseAdapter{
 			holder = (AppViewHolder) convertView.getTag();
 		}
 		App app = list.get(position);
-		holder.icon.setImageResource(app.appIcon);
+		holder.icon.setImageBitmap(ShortcutUtils.generateShorcut(context, app.getAppIcon()));
 		holder.title.setText(app.name);
 		if(app.isInstalled){
 			holder.installBtn.setVisibility(View.GONE);

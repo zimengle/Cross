@@ -24,6 +24,10 @@ public class ShortcutUtils {
 	
 	public static final String ACTION_APP_LAUNCHER = "ACTION_APP_LAUNCHER";
 	
+	public static Bitmap generateShorcut(Context context, int resID){
+		return generateShorcut(context,((BitmapDrawable)context.getResources().getDrawable(resID)).getBitmap());
+	}
+	
 	public static Bitmap generateShorcut(Context context,Bitmap icon){
 		Bitmap newIcon = Bitmap.createBitmap(icon.getWidth(), icon.getHeight(), Config.ARGB_8888);
 		Bitmap light = ((BitmapDrawable)context.getResources().getDrawable(R.drawable.light_app_icon)).getBitmap();
