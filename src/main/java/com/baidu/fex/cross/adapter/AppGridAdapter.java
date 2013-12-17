@@ -1,8 +1,10 @@
 package com.baidu.fex.cross.adapter;
 
+import java.io.Serializable;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,17 +29,19 @@ public class AppGridAdapter extends BaseAdapter{
 		this.onItemClickListener = onItemClickListener;
 	}
 	
-	public static class App {
+	public static class App implements Serializable{
 		private int appIcon;
 		private String shortcutName;
 		private String url;
 		private String name;
 		private boolean isInstalled;
+		private boolean hasNewMsg;
 		private Context context;
 		
-		public App(Context context,int appIcon, String url, String name) {
+		public App(Context context,int appIcon, String url, String name,boolean hasNewMsg) {
 			this.context = context;
 			this.appIcon = appIcon;
+			this.hasNewMsg = hasNewMsg;
 			this.url = url;
 			this.name = name;
 			shortcutName = name;
@@ -46,6 +50,14 @@ public class AppGridAdapter extends BaseAdapter{
 		
 		public void checkInstall(){
 			isInstalled = ShortcutUtils.hasShortcut(context, shortcutName);
+		}
+		
+		public void setHasNewMsg(boolean hasNewMsg) {
+			this.hasNewMsg = hasNewMsg;
+		}
+		
+		public boolean isHasNewMsg() {
+			return hasNewMsg;
 		}
 		
 		public String getShortcutName() {
@@ -71,6 +83,15 @@ public class AppGridAdapter extends BaseAdapter{
 		public String getName() {
 			return name;
 		}
+		
+		public Bitmap getIcon(){
+			Bitmap bitmap = ShortcutUtils.generateShorcut(context, appIcon);
+			if(hasNewMsg){
+				bitmap = ShortcutUtils.generateNewShorcut(context, bitmap);
+			}
+			return bitmap;
+		}
+		
 	}
 
 	private List<App> list;
@@ -126,7 +147,7 @@ public class AppGridAdapter extends BaseAdapter{
 			holder = (AppViewHolder) convertView.getTag();
 		}
 		App app = list.get(position);
-		holder.icon.setImageBitmap(ShortcutUtils.generateShorcut(context, app.getAppIcon()));
+		holder.icon.setImageBitmap(app.getIcon());
 		holder.title.setText(app.name);
 		if(app.isInstalled){
 			holder.installBtn.setVisibility(View.GONE);

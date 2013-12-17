@@ -9,11 +9,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.GridView;
 
 import com.baidu.fex.cross.adapter.AppGridAdapter;
 import com.baidu.fex.cross.adapter.AppGridAdapter.App;
 import com.baidu.fex.cross.adapter.AppGridAdapter.OnItemClickListener;
+import com.baidu.fex.cross.utils.AppStorage;
 import com.baidu.fex.cross.utils.ShortcutUtils;
 
 public class HomeActivity extends Activity {
@@ -27,23 +29,29 @@ public class HomeActivity extends Activity {
 	private Context mContext;
 
 	private List<App> apps;
+	
+	private AppStorage appStorage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		mContext = this;
+		appStorage = AppStorage.getInstance(mContext);
 		setContentView(R.layout.home);
 		findViewById(R.id.home_tab_app_page).setSelected(true);
-		apps = new ArrayList<App>() {
-			{
-				add(new App(mContext, R.drawable.app_tieba_icon,
-						"http://tieba.baidu.com", "贴吧轻应用"));
-				add(new App(mContext, R.drawable.app_zhidao_icon,
-						"http://zhidao.baidu.com", "知道轻应用"));
-				add(new App(mContext, R.drawable.app_wenku_icon, "http://wk.baidu.com", "文库轻应用"));
-			}
-		};
+		apps = appStorage.get();
+		if(apps == null){
+			apps = new ArrayList<App>() {
+				{
+					add(new App(mContext, R.drawable.app_tieba_icon,
+							"http://tieba.baidu.com", "贴吧轻应用",false));
+					add(new App(mContext, R.drawable.app_zhidao_icon,
+							"http://zhidao.baidu.com", "知道轻应用",false));
+					add(new App(mContext, R.drawable.app_wenku_icon, "http://wk.baidu.com", "文库轻应用",false));
+				}
+			};
+		}
 		gridAdapter = new AppGridAdapter(this, apps);
 		gridAdapter.setOnItemClickListener(new OnItemClickListener() {
 
@@ -54,8 +62,9 @@ public class HomeActivity extends Activity {
 					openApp(app.getUrl());
 					break;
 				case R.id.btn_install:
-					ShortcutUtils.createShortcut(mContext,app.getUrl(), app.getShortcutName(),app.getAppIcon());
+					ShortcutUtils.createShortcut(mContext,app);
 					app.setInstalled(true);
+					appStorage.save(apps);
 					gridAdapter.notifyDataSetChanged();
 					break;
 				}
@@ -63,6 +72,17 @@ public class HomeActivity extends Activity {
 		});
 		gridView = (GridView) findViewById(R.id.gridview);
 		gridView.setAdapter(gridAdapter);
+		findViewById(R.id.home_tab_msg).setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				App app = apps.get(0);
+				app.setHasNewMsg(true);
+				ShortcutUtils.updateShortcut(mContext, app);
+				
+//				ShortcutUtils.createShortcut(mContext, app);
+				gridAdapter.notifyDataSetChanged();
+			}
+		});
 	}
 
 	public void openApp(String url) {
