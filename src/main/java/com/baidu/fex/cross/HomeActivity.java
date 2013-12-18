@@ -1,9 +1,6 @@
 package com.baidu.fex.cross;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,16 +10,16 @@ import android.view.View.OnClickListener;
 import android.widget.GridView;
 
 import com.baidu.fex.cross.adapter.AppGridAdapter;
-import com.baidu.fex.cross.adapter.AppGridAdapter.App;
 import com.baidu.fex.cross.adapter.AppGridAdapter.OnItemClickListener;
-import com.baidu.fex.cross.utils.AppStorage;
+import com.baidu.fex.cross.dao.DatabaseHelper;
+import com.baidu.fex.cross.model.App;
+import com.baidu.fex.cross.utils.AppUtils;
 import com.baidu.fex.cross.utils.ShortcutUtils;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends BaseActivity<DatabaseHelper> {
 
 	private GridView gridView;
-
-	
 
 	private AppGridAdapter gridAdapter;
 
@@ -30,41 +27,43 @@ public class HomeActivity extends Activity {
 
 	private List<App> apps;
 	
-	private AppStorage appStorage;
+	private RuntimeExceptionDao<App, String> dao;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		mContext = this;
-		appStorage = AppStorage.getInstance(mContext);
+		
+		dao = getHelper().getSimpleDataDao();
+		
 		setContentView(R.layout.home);
 		findViewById(R.id.home_tab_app_page).setSelected(true);
-		apps = appStorage.get();
-		if(apps == null){
-			apps = new ArrayList<App>() {
-				{
-					add(new App(mContext, R.drawable.app_tieba_icon,
-							"http://tieba.baidu.com", "百度贴吧",false));
-					add(new App(mContext, R.drawable.app_zhidao_icon,
-							"http://zhidao.baidu.com", "百度知道",false));
-					add(new App(mContext, R.drawable.app_wenku_icon, "http://wk.baidu.com", "百度文库",false));
-				}
-			};
-		}
-		gridAdapter = new AppGridAdapter(this, apps);
+		apps = dao.queryForAll();
+		gridAdapter = new AppGridAdapter(this, apps){
+			@Override
+			public void notifyDataSetChanged() {
+				
+				super.notifyDataSetChanged();
+			}
+		};
 		gridAdapter.setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(View view, int position) {
 				App app = apps.get(position);
 				switch (view.getId()) {
 				case R.id.icon:
+					if(app.isHasNewMsg()){
+						app.setHasNewMsg(false);
+						ShortcutUtils.updateShortcut(mContext, app);
+						dao.update(app);
+						gridAdapter.notifyDataSetChanged();
+					}
 					openApp(app.getUrl());
 					break;
 				case R.id.btn_install:
 					ShortcutUtils.createShortcut(mContext,app);
 					app.setInstalled(true);
-					appStorage.save(apps);
 					gridAdapter.notifyDataSetChanged();
 					break;
 				}
@@ -76,17 +75,19 @@ public class HomeActivity extends Activity {
 			
 			public void onClick(View v) {
 				App app = apps.get(0);
-				app.setHasNewMsg(true);
-				ShortcutUtils.updateShortcut(mContext, app);
+				if(!app.isHasNewMsg()){
+					app.setHasNewMsg(true);
+					ShortcutUtils.updateShortcut(mContext, app);
+					dao.update(app);
+					gridAdapter.notifyDataSetChanged();
+				}
 				
-//				ShortcutUtils.createShortcut(mContext, app);
-				gridAdapter.notifyDataSetChanged();
+				
 			}
 		});
 	}
 
 	public void openApp(String url) {
-
 		Intent intent = new Intent(mContext, BrowserActivity.class);
 		intent.putExtra("url", url);
 		mContext.startActivity(intent);
@@ -95,17 +96,32 @@ public class HomeActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		checkInstalled();
+		checkChange();
 	}
 	
-	protected void checkInstalled(){
+	protected void checkChange() {
 		new AsyncTask<Void, Void, Void>(){
 
 			@Override
 			protected Void doInBackground(Void... params) {
+				
 				for(App app : apps){
-					app.checkInstall();
+					boolean ischange = false;
+					App _app = dao.queryForId(app.getName());
+					if(_app != null && _app.isHasNewMsg() != app.isHasNewMsg()){
+						app.setHasNewMsg(_app.isHasNewMsg());
+						ischange = true;
+					}
+					boolean installed = AppUtils.checkInstall(mContext, app);
+					if(installed != app.isInstalled()){
+						app.setInstalled(installed);
+						ischange = true;
+					}
+					if(ischange){
+						dao.update(app);
+					}
 				}
+				
 				return null;
 			}
 			
@@ -116,5 +132,6 @@ public class HomeActivity extends Activity {
 			
 		}.execute();
 	}
+	
 
 }

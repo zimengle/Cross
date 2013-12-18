@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.baidu.fex.cross.BrowserActivity;
 import com.baidu.fex.cross.R;
-import com.baidu.fex.cross.adapter.AppGridAdapter.App;
+import com.baidu.fex.cross.model.App;
 
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -65,6 +65,7 @@ public class ShortcutUtils {
 		if (AUTHORITY == null) {
 			return false;
 		}
+		
 		Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 				+ "/favorites?notify=true");
 		Cursor c = context.getContentResolver().query(CONTENT_URI,
@@ -89,10 +90,11 @@ public class ShortcutUtils {
 		shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 		shortcutIntent.setAction(ACTION_APP_LAUNCHER);
 		shortcutIntent.putExtra("url", app.getUrl());
+		shortcutIntent.putExtra("name", app.getName());
 		intent.putExtra("duplicate", true);
 		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
 		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, app.getName());
-		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, app.getIcon());
+		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, AppUtils.getIcon(context, app));
 		intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
 		context.sendBroadcast(intent);
 	}
@@ -109,7 +111,7 @@ public class ShortcutUtils {
 		
 		ContentValues cv = new ContentValues();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		app.getIcon().compress(Bitmap.CompressFormat.PNG, 100, baos); 
+		AppUtils.getIcon(context, app).compress(Bitmap.CompressFormat.PNG, 100, baos); 
 		byte[] bytes = baos.toByteArray();
 		cv.put("icon",bytes);
 		cr.update(CONTENT_URI, cv, "title=?", new String[] {app.getName()});

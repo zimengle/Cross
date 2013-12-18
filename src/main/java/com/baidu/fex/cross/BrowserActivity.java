@@ -1,5 +1,6 @@
 package com.baidu.fex.cross;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -14,20 +15,28 @@ import android.widget.Toast;
 import com.baidu.fex.cross.browser.WebViewCallback;
 import com.baidu.fex.cross.component.Album;
 import com.baidu.fex.cross.component.Album.AlbumListener;
+import com.baidu.fex.cross.dao.DatabaseHelper;
+import com.baidu.fex.cross.model.App;
 import com.baidu.fex.cross.utils.ShortcutUtils;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 
-public class BrowserActivity extends FragmentActivity implements
+public class BrowserActivity extends BaseActivity<DatabaseHelper> implements
 		OnClickListener, WebViewCallback {
 
 	private WebViewFragment fragment;
 
 	private View mHomeBtn, mBackBtn, mLoadingView;
 
+	private Context context;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		context = this;
 		setContentView(R.layout.browser);
 
+		newMsgHandle();
 		if (findViewById(R.id.center) != null) {
 			if (savedInstanceState != null) {
 				return;
@@ -47,6 +56,20 @@ public class BrowserActivity extends FragmentActivity implements
 		mBackBtn = findViewById(R.id.back);
 		mBackBtn.setOnClickListener(this);
 		mLoadingView = findViewById(R.id.loading);
+	}
+
+	private void newMsgHandle() {
+		RuntimeExceptionDao<App, String> dao = getHelper().getSimpleDataDao();
+		String name = getIntent().getStringExtra("name");
+		if(name != null){
+			App app = dao.queryForId(name);
+			if(app.isHasNewMsg()){
+				app.setHasNewMsg(false);
+				ShortcutUtils.updateShortcut(context, app);
+				dao.update(app);
+			}
+		}
+		
 	}
 
 	private boolean doubleBackToExitPressedOnce = false;
