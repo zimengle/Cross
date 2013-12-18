@@ -68,7 +68,7 @@ public class ShortcutUtils {
 		Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 				+ "/favorites?notify=true");
 		Cursor c = context.getContentResolver().query(CONTENT_URI,
-				new String[] { "title","icon"}, "title=?", new String[] { name },
+				new String[] { "title","icon"}, "title=? and iconType=1 and intent like ?", new String[] { name,"%"+ACTION_APP_LAUNCHER+"%"},
 				null);
 		if (c != null && c.getCount() > 0) {
 			c.moveToFirst();
