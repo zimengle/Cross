@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.baidu.fex.cross.browser.CrossWebView;
 import com.baidu.fex.cross.browser.WebViewCallback;
+import com.baidu.fex.cross.webcomponent.BaiduReaderComponent;
 
 public class WebViewFragment extends Fragment{
 
@@ -38,8 +39,11 @@ public class WebViewFragment extends Fragment{
 			Bundle savedInstanceState) {
 		
 		mWebView = new CrossWebView(mContext);
-		mWebView.setWebViewCallback(webViewCallback);
+		
+		mWebView.addWebviewCallback(webViewCallback);
 		mWebView.loadUrl(getArguments().getString("url"));
+		new BaiduReaderComponent(mContext,mWebView,getArguments().getString("type"));
+		
 		return mWebView;
 	}
 	

@@ -98,6 +98,26 @@ public class ShortcutUtils {
 		intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
 		context.sendBroadcast(intent);
 	}
+	
+	public static void createShortcut(Context context, String name,String url,Bitmap bitmap,String type) {
+		final Intent intent = new Intent();
+		Intent shortcutIntent = new Intent();
+
+		shortcutIntent.setComponent(new ComponentName(context.getPackageName(),
+				BrowserActivity.class.getName()));
+		shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+		shortcutIntent.setAction(ACTION_APP_LAUNCHER);
+		shortcutIntent.putExtra("url", url);
+		shortcutIntent.putExtra("name", name);
+		shortcutIntent.putExtra("type", type);
+		intent.putExtra("duplicate", true);
+		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, name);
+		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, bitmap);
+		intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+		context.sendBroadcast(intent);
+	}
 
 	public static void updateShortcut(Context context,App app) {
 		String AUTHORITY = getAuthorityFromPermission(context,

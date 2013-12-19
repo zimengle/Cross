@@ -63,7 +63,7 @@ public class BrowserActivity extends BaseActivity<DatabaseHelper> implements
 		String name = getIntent().getStringExtra("name");
 		if(name != null){
 			App app = dao.queryForId(name);
-			if(app.isHasNewMsg()){
+			if(app !=null && app.isHasNewMsg()){
 				app.setHasNewMsg(false);
 				ShortcutUtils.updateShortcut(context, app);
 				dao.update(app);

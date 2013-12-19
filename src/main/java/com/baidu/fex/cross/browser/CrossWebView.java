@@ -3,6 +3,7 @@ package com.baidu.fex.cross.browser;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,7 +25,7 @@ public class CrossWebView extends WebView implements WebComponent{
 
 	private Context context;
 	
-	private WebViewCallback webViewCallback = new WebViewCallbackImpl();
+	private List<WebViewCallback>  webViewCallbacks = new ArrayList<WebViewCallback>();
 	
 	private ArrayList<WebComponent> webComponents = new ArrayList<WebComponent>();
 
@@ -45,9 +46,23 @@ public class CrossWebView extends WebView implements WebComponent{
 		init(context);
 	}
 
-	public void setWebViewCallback(WebViewCallback webViewCallback) {
-		if (webViewCallback != null){
-			this.webViewCallback = webViewCallback;
+	public void addWebviewCallback(WebViewCallback webViewCallback){
+		webViewCallbacks.add(webViewCallback);
+	}
+	
+	public void removeWebviewCallback(WebViewCallback webViewCallback){
+		webViewCallbacks.remove(webViewCallback);
+	}
+	
+	protected void fireOnPageStart(WebView view, String url, Bitmap favicon) {
+		for(WebViewCallback callback:webViewCallbacks){
+			callback.onPageStarted(view, url, favicon);
+		}
+	}
+	
+	protected void fireOnPageFinished(WebView view, String url) {
+		for(WebViewCallback callback:webViewCallbacks){
+			callback.onPageFinished(view, url);
 		}
 	}
 	
@@ -62,7 +77,7 @@ public class CrossWebView extends WebView implements WebComponent{
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
-				webViewCallback.onPageStarted(view, url, favicon);
+				fireOnPageStart(view, url, favicon);
 				loaded = false;
 			}
 			
@@ -70,7 +85,7 @@ public class CrossWebView extends WebView implements WebComponent{
 			public void onPageFinished(WebView view, String url) {
 				if (!loaded) {
 					super.onPageFinished(view, url);
-					webViewCallback.onPageFinished(view, url);
+					fireOnPageFinished(view, url);
 					loaded = true;
 				}
 			}

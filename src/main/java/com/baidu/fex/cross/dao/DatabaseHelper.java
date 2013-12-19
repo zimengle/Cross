@@ -40,6 +40,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 			dao.createIfNotExists(new App(R.drawable.app_zhidao_icon,
 					"http://zhidao.baidu.com",false, "百度知道",false));
 			dao.createIfNotExists(new App(R.drawable.app_wenku_icon, "http://wk.baidu.com",false, "百度文库",false));
+			dao.createIfNotExists(new App(R.drawable.app_yuedu_icon, "http://yd.baidu.com",false, "百度阅读",false));
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
