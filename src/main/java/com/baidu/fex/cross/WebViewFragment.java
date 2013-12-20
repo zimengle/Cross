@@ -62,6 +62,17 @@ public class WebViewFragment extends Fragment{
 		mWebView.onActivityResult(requestCode, resultCode, data);
 	}
 	
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		if(mWebView != null){
+			mWebView.removeAllViews();
+			mWebView.destroy();
+		}
+	}
+	
+	
+	
 	
 
 }
