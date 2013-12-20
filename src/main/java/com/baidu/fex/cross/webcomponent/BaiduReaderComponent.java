@@ -36,7 +36,7 @@ public class BaiduReaderComponent implements WebViewCallback{
 	
 	private boolean loaded = false;
 	
-	public BaiduReaderComponent(final Context context,CrossWebView webView,String type) {
+	public BaiduReaderComponent(final Context context,final CrossWebView webView,String type) {
 		this.type = type;
 		
 		this.context = context;
@@ -54,10 +54,26 @@ public class BaiduReaderComponent implements WebViewCallback{
 				ShortcutUtils.createShortcut(context,title,url,bitmap,"yuedu");
 				Toast.makeText(context, "已将书籍添加到桌面",
 						Toast.LENGTH_SHORT).show();
-				
-				
+				new Handler().post(new Runnable() {
+					
+					public void run() {
+						webView.loadUrl("javascript:addDesktopCallback()");
+					}
+				});
 				
 			}
+			
+			@SuppressWarnings("unused")
+			public void hasInDesktop(String title){
+				final boolean has = ShortcutUtils.hasShortcut(context, title);
+				new Handler().post(new Runnable() {
+					
+					public void run() {
+						webView.loadUrl("javascript:hasInDesktopCallback("+String.valueOf(has)+")");
+					}
+				});
+			}
+			
 		}, "cross_yuedu_native");
 	}
 	
@@ -70,7 +86,7 @@ public class BaiduReaderComponent implements WebViewCallback{
 
 	public void onPageFinished(WebView view, String url) {
 		if(!loaded && "yuedu".equals(type)){
-			webView.loadUrl("javascript:var url = $('[data-fun=\"try-readBook\"]').attr(\"data-href\");if(/^http:\\/\\/yd\\.baidu\\.com\\/ebook/.test(location.href)){location.href=url}");
+			webView.loadUrl("javascript:var url = $('[data-href^=\"http://yd.baidu.com/view/\"]').attr(\"data-href\");if(/^http:\\/\\/yd\\.baidu\\.com\\/ebook/.test(location.href)){location.href=url}");
 			loaded = true;
 			return;
 		}
