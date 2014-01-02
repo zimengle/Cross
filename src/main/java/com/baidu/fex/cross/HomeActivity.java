@@ -1,6 +1,8 @@
 package com.baidu.fex.cross;
 
 import java.util.List;
+
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,6 +16,8 @@ import com.baidu.fex.cross.adapter.AppGridAdapter.OnItemClickListener;
 import com.baidu.fex.cross.dao.DatabaseHelper;
 import com.baidu.fex.cross.model.App;
 import com.baidu.fex.cross.utils.AppUtils;
+import com.baidu.fex.cross.utils.NotificationUtils;
+import com.baidu.fex.cross.utils.NotificationUtils.NotificationItem;
 import com.baidu.fex.cross.utils.ShortcutUtils;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
@@ -75,6 +79,8 @@ public class HomeActivity extends BaseActivity<DatabaseHelper> {
 			
 			public void onClick(View v) {
 				App app = apps.get(0);
+				
+				NotificationUtils.build(mContext, new NotificationItem(R.drawable.msg, "百度贴吧", "1条新消息,点击查看", ShortcutUtils.generateShorcut(mContext, app.getAppIcon()),  "http://tieba.baidu.com/i/400304304/replyme"));
 				if(!app.isHasNewMsg()){
 					app.setHasNewMsg(true);
 					ShortcutUtils.updateShortcut(mContext, app);
